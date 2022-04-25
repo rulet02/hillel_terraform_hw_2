@@ -1,30 +1,21 @@
-resource "google_compute_instance" "default" {
-  name         = var.instance_name
-  machine_type = var.instance_type
-  zone         = var.zone
-
-  boot_disk {
-    initialize_params {
-      image = var.instance_image
-    }
-  }
-
-  network_interface {
-    network = var.vpc_name
-    access_config {
-      // Ephemeral public IP
-    }
-  }
-
-  metadata_startup_script = "sudo apt update; sudo apt install nginx -y; curl -I 127.0.0.1"
-
+module "vpc" {
+  source      = "./modules/vpc"
+  project     = var.project
+  vpc_name    = var.vpc_name
+  auto_mode   = false
+  subnet_name = var.subnet_name
+  region      = var.region
+  cidr        = var.cidr
 }
 
-resource "google_storage_bucket" "static-site" {
-  name     = var.bucket_name
-  location = var.region
-
-  force_destroy = true
-
-  uniform_bucket_level_access = true
+module "ce" {
+  source         = "./modules/ce"
+  project        = var.project
+  instance_name  = var.instance_name
+  region         = var.region
+  zone           = var.zone
+  instance_type  = var.instance_type
+  instance_image = var.instance_image
+  subnet_id      = module.vpc.subnet_id
+  instance_ip    = var.instance_ip
 }

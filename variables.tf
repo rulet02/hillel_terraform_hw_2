@@ -41,16 +41,26 @@ variable "instance_image" {
   default     = "debian-cloud/debian-9"
 }
 
+variable "instance_ip" {
+  default     = "172.17.1.10"
+  description = "ip_instance"
+}
+
+//VPC
 variable "vpc_name" {
   type        = string
+  default     = "vpc-1"
   description = "vpc_name"
-  default     = "default"
 }
 
-//Cloud storage
-variable "bucket_name" {
+variable "subnet_name" {
   type        = string
-  description = "bucket_name"
-  default     = "hillel-18-borovyk"
+  default     = "subnet-1"
+  description = "subnet_name"
 }
 
+variable "cidr" {
+  type        = string
+  default     = "172.17.1.0/24"
+  description = "cidr"
+}
